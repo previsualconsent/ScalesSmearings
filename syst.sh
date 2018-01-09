@@ -113,43 +113,19 @@ EOF
 
 cat > etSyst.dat <<EOF
 # [absEta_0_1-bad]
-0 20 absEta_0_1-bad  0.9987 
-20 33 absEta_0_1-bad  0.9987 
-33 39 absEta_0_1-bad  0.9993 
-39 45 absEta_0_1-bad  0.9995 
-45 50 absEta_0_1-bad  1.0010 
-50 58 absEta_0_1-bad  1.0014 
-58 100 absEta_0_1-bad  1.0020 
-100 1000000 absEta_0_1-bad  1.0020 
+0 1000000 absEta_0_1-bad  1.0020 
 
 
 # [absEta_0_1-gold]
-0 20 absEta_0_1-gold  0.9985 
-20 35 absEta_0_1-gold  0.9985 
-35 43 absEta_0_1-gold  0.9992 
-43 50 absEta_0_1-gold  1.0003 
-50 55 absEta_0_1-gold  1.0010 
-55 100 absEta_0_1-gold  1.0013 
-100 1000000 absEta_0_1-gold  1.0013 
+0 1000000 absEta_0_1-gold  1.0013 
 
 
 # [absEta_1_1.4442-bad]
-0 20 absEta_1_1.4442-bad  0.9972 
-20 33 absEta_1_1.4442-bad  0.9972 
-33 39 absEta_1_1.4442-bad  0.9987 
-39 45 absEta_1_1.4442-bad  1.0007 
-45 50 absEta_1_1.4442-bad  1.0034 
-50 58 absEta_1_1.4442-bad  1.0050 
-58 100 absEta_1_1.4442-bad  1.0059 
-100 1000000 absEta_1_1.4442-bad  1.0059 
+0 1000000 absEta_1_1.4442-bad  1.0059 
 
 
 # [absEta_1_1.4442-gold]
-0 20 absEta_1_1.4442-gold  0.9996 
-20 40 absEta_1_1.4442-gold  0.9996 
-40 50 absEta_1_1.4442-gold  1.0008 
-50 100 absEta_1_1.4442-gold  1.0008 
-100 1000000 absEta_1_1.4442-gold  1.0008 
+0 1000000 absEta_1_1.4442-gold  1.0008 
 
 EOF
 
@@ -199,18 +175,21 @@ END{
 }
 EOF
 
-awk -f update.awk newSyst.dat $scaleFile | sort | uniq > ${finalScaleFile}
+
 
 cat > gainCorrections.awk <<EOF
 BEGIN{
+gain12corr=1
+gain6corr=1
+gain1corr=1
 }
 
 (/absEta_0_/ || /absEta_1_/){
   run=sprintf("%s\t%s\t%s", \$2, \$3, \$4)
   othersysts=sprintf("%s\t%s\t%s", \$6, \$7, \$8)
-  printf("%s-gainEle_12\t%s\t%.4f\t%s\t%.4f\n", \$1, run, \$5/1,      othersysts, 0.);
-  printf("%s-gainEle_6\t%s\t%.4f\t%s\t%.4f\n",  \$1, run, \$5/0.99864,othersysts, 0.0007);
-  printf("%s-gainEle_1\t%s\t%.4f\t%s\t%.4f\n",  \$1, run, \$5/1.01,   othersysts, 0.050);
+  printf("%s-gainEle_12\t%s\t%.4f\t%s\t%.4f\n", \$1, run, \$5/gain12corr,      othersysts, 0.);
+  printf("%s-gainEle_6\t%s\t%.4f\t%s\t%.4f\n",  \$1, run, \$5/gain6corr,othersysts, 0.001);
+  printf("%s-gainEle_1\t%s\t%.4f\t%s\t%.4f\n",  \$1, run, \$5/gain1corr,   othersysts, 0.020);
 }
 (!(/absEta_0_/ || /absEta_1_/)){
   printf("%s\t%.4f\n", \$0, 0.0000)
@@ -220,3 +199,7 @@ BEGIN{
 END{
 }
 EOF
+
+
+
+awk -f update.awk newSyst.dat $scaleFile | sort | uniq | awk -f gainCorrections.awk > ${finalScaleFile}
