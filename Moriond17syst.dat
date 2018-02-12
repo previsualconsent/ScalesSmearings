@@ -1,4 +1,4 @@
-#                     regr. train.  MC    Etmin  ele ID   closure   SF ID   \RNINE trans.  Stat. 
+#                     regr_train.  MC    Etmin  ele_ID   closure   SF_ID   \RNINE_trans.  Stat. 
 absEta_0_1-bad        0.03          0.02  0.00   0.00     0.00      0.01    0.02           0.00	
 absEta_0_1-gold       0.03          0.00  0.00   0.00     0.00      0.00    0.00           0.00	
 absEta_1_1.4442-bad   0.00          0.01  0.02   0.00     0.00      0.01    0.00           0.00	

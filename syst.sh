@@ -1,5 +1,6 @@
 #!/bin/bash
-scaleFile=Legacy2016_17Aug2017_pho_scales.dat
+#scaleFile=Legacy2016_17Aug2017_pho_scales.dat
+scaleFile=Moriond18_Run2017_v1_ele_scales.dat
 finalScaleFile=`basename $scaleFile _scales.dat`_unc_scales.dat
 
 systFile=Moriond17syst.dat
@@ -131,8 +132,9 @@ EOF
 
 
 #newSyst.dat is the file with the systematics updated with the Et scale shift seen in Run I
-awk -f merge.awk $systFile $etSystFile | sort | sed 's|\(.*\)-Et_|\1 \1-Et_|' > newSyst.dat
+#awk -f merge.awk $systFile $etSystFile | sort | sed 's|\(.*\)-Et_|\1 \1-Et_|' > newSyst.dat
 #awk -f merge.awk $systFile  | sort | sed 's|\(.*\)-Et_|\1 \1-Et_|' > newSyst.dat
+cp $systFile newSyst.dat
 
 # this script updates the scale.dat file from ECALELF with the uncertainties
 cat > update.awk <<EOF
